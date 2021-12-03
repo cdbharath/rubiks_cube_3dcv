@@ -26,17 +26,15 @@ class VideoPlayer:
         self.frame = None
         self.tracker = planeTracker()
         
+        # TODO 
+        image = NotImplemented
+        self.tracker.add_target(image, (0, 0, image.shape[0], image.shape[1]))
+        
         cv2.namedWindow("PlaneTracker")
-        # cv2.createTrackbar('focal', 'PlaneTracker', 25, 50, self.empty)
         cv2.createTrackbar('focal', 'PlaneTracker', 25, 50, self.empty)
-
-        self.rect = SelectRect("PlaneTracker", self.rect_cb)
     
     def empty(*arg, **kw):
         pass
-    
-    def rect_cb(self, rect):
-        self.tracker.add_target(self.frame, rect)
     
     def play(self):
         obj = objLoader("./ar_models/fox.obj", swapyz=True)

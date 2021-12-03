@@ -17,7 +17,7 @@ ar_edges = [(0, 1), (1, 2), (2, 3), (3, 0),
 
 class VideoPlayer:
     def __init__(self):
-        self.cap = cv2.VideoCapture(-1)
+        self.cap = cv2.VideoCapture(2)
         self.frame = None
         self.tracker = planeTracker()
         

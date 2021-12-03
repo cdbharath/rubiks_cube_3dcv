@@ -5,6 +5,7 @@
 import cv2
 import numpy as np
 from collections import namedtuple
+import glob
 
 FLANN_INDEX_KDTREE = 1
 FLANN_INDEX_LSH    = 6
@@ -32,42 +33,6 @@ PlanarTarget = namedtuple('PlaneTarget', 'image, rect, keypoints, descrs, data')
   quad   - target boundary quad in input frame
 '''
 TrackedTarget = namedtuple('TrackedTarget', 'target, p0, p1, H, quad')
-
-class SelectRect:
-    def __init__(self, window, cb):
-        self.window = window
-        self.callback = cb
-        self.tp_rect_start = None
-        self.tp_rect = None
-        cv2.setMouseCallback(window, self.on_mouse)
-    
-    def on_mouse(self, event, x, y, flags, param):
-        x, y = np.int16([x, y])
-        
-        if event == cv2.EVENT_LBUTTONDOWN:
-            self.tp_rect_start = (x, y)
-            return
-        
-        if self.tp_rect_start:
-            if flags & cv2.EVENT_FLAG_LBUTTON:
-                xtemp, ytemp = self.tp_rect_start
-                x0, y0 = np.minimum([xtemp, ytemp], [x, y])
-                x1, y1 = np.maximum([xtemp, ytemp], [x, y])
-                if x1-x0 > 0  and y1-y0 >0:
-                    self.tp_rect = (x0, y0, x1, y1)
-            else:
-                rect = self.tp_rect
-                self.tp_rect = None
-                self.tp_rect_start = None
-                if rect:
-                    self.callback(rect)
-                
-    def draw(self, out_frame):
-        if not self.tp_rect:
-            return False
-        x0, y0, x1, y1 = self.tp_rect
-        cv2.rectangle(out_frame, (x0, y0), (x1, y1), (0, 255, 0), 2)
-        return True
 
 class planeTracker:
     def __init__(self):
@@ -146,18 +111,29 @@ class VideoPlayer:
         self.tracker = planeTracker()
         
         cv2.namedWindow("PlaneTracker")
-        self.rect = SelectRect("PlaneTracker", self.rect_cb)
-    
-    def rect_cb(self, rect):
-        cv2.imwrite("./data/result.jpg", self.frame)
-        print(rect)
-        self.tracker.add_target(self.frame, rect)
+        
+        train_images = glob.glob("./data/train_images/test/*")
+        train_images = sorted(train_images)
+        print(train_images)
+
+        with open("./data/train_images/rect.txt") as file:
+            lines = file.readlines()
+            lines = [line.split(',') for line in lines]
+
+            for index, train_image in enumerate(train_images):
+                line = [int(point) for point in lines[index]]
+                print(line)
+                train_image.split('/')[-1].split('.')[0]
+                frame = cv2.imread(train_image)
+                x, y, _  = frame.shape
+
+                self.tracker.add_target(frame, (line[0], line[1], line[2], line[3]))
+                # self.tracker.add_target(frame, (0, 0, y, x))
     
     def play(self):
         while True:
-            if self.rect.tp_rect is None:
-                ret, frame = self.cap.read()
-                self.frame = frame.copy()
+            ret, frame = self.cap.read()
+            self.frame = frame.copy()
             frame = self.frame.copy()
             tracked = self.tracker.track(self.frame)
             for tr in tracked:
@@ -165,7 +141,7 @@ class VideoPlayer:
                 for (x, y) in np.int32(tr.p1):
                     cv2.circle(frame, (x, y), 2, (255, 255, 255))
                     
-            self.rect.draw(frame)
+            # self.rect.draw(frame)
             cv2.imshow("PlaneTracker", frame)
             ret = cv2.waitKey(1)
             if ret == ord('q'):

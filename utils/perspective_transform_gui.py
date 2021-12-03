@@ -34,6 +34,7 @@ def click_event(event, x, y, flags, params):
             output = np.array([[0,0],[0, 600],[600, 0],[600, 600]], dtype='float32') 
             matrix = cv2.getPerspectiveTransform(point_list, output)
             result = cv2.warpPerspective(img, matrix, (600, 600))
+            result = cv2.resize(result, (300, 300))
             cv2.imwrite('../data/result.jpg', result)
              
     # checking for right mouse clicks    
@@ -58,7 +59,7 @@ def click_event(event, x, y, flags, params):
 if __name__== "__main__":
  
     # reading the image
-    img = cv2.imread('../data/web_cam.jpg', 1)
+    img = cv2.imread('../data/train_images/6.jpg', 1)
  
     # displaying the image
     cv2.imshow('image', img)

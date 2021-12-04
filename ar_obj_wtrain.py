@@ -7,6 +7,7 @@ import numpy as np
 from plane_tracker import planeTracker, SelectRect
 from load_obj import objLoader
 import math
+import glob
 
 # Simple model of a typical house (prism over cuboid)
 ar_verts = np.float32([[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0],
@@ -26,9 +27,23 @@ class VideoPlayer:
         self.frame = None
         self.tracker = planeTracker()
         
-        # TODO 
-        image = NotImplemented
-        self.tracker.add_target(image, (0, 0, image.shape[0], image.shape[1]))
+        train_images = glob.glob("./data/train_images/test/*")
+        train_images = sorted(train_images)
+        print(train_images)
+
+        with open("./data/train_images/rect.txt") as file:
+            lines = file.readlines()
+            lines = [line.split(',') for line in lines]
+
+            for index, train_image in enumerate(train_images):
+                line = [int(point) for point in lines[index]]
+                print(line)
+                train_image.split('/')[-1].split('.')[0]
+                frame = cv2.imread(train_image)
+                x, y, _  = frame.shape
+
+                self.tracker.add_target(frame, (line[0], line[1], line[2], line[3]))
+                # self.tracker.add_target(frame, (0, 0, y, x))
         
         cv2.namedWindow("PlaneTracker")
         cv2.createTrackbar('focal', 'PlaneTracker', 25, 50, self.empty)
@@ -40,9 +55,8 @@ class VideoPlayer:
         obj = objLoader("./ar_models/fox.obj", swapyz=True)
         
         while True:
-            if self.rect.tp_rect is None:
-                ret, frame = self.cap.read()
-                self.frame = frame.copy()
+            ret, frame = self.cap.read()
+            self.frame = frame.copy()
             frame = self.frame.copy()
             tracked = self.tracker.track(self.frame)
             for tr in tracked:
@@ -52,7 +66,7 @@ class VideoPlayer:
                 # self.draw_model(frame, tr)
                 frame = self.render_obj(frame, obj, tr)
                     
-            self.rect.draw(frame)
+            # self.rect.draw(frame)
             cv2.imshow("PlaneTracker", frame)
             ret = cv2.waitKey(1)
             if ret == ord('q'):

@@ -42,7 +42,7 @@ class VideoPlayer:
                 cv2.polylines(frame, [np.int32(tr.quad)], True, (255, 255, 255), 2)
                 for (x, y) in np.int32(tr.p1):
                     cv2.circle(frame, (x, y), 2, (255, 255, 255))
-                self.estimate_pose(frame, tr)
+                frame = self.estimate_pose(frame, tr)
                     
             self.rect.draw(frame)
             cv2.imshow("PlaneTracker", frame)
@@ -60,7 +60,30 @@ class VideoPlayer:
                         [0.0,0.0,      1.0]])
         dist_coef = np.zeros(4)
         _ret, rvec, tvec = cv2.solvePnP(quad_3d, tracked.quad, K, dist_coef)
-        print(tvec)
+        
+        # draws axis on cube
+        axis = np.float32([[0, 0, 0], [1,0,0], [0,1,0], [0,0,-1]]).reshape(-1,3)
+        axis = axis * [(x1-x0), (y1-y0), -(x1-x0)*0.3] + (x0, y0, 0)
+        
+        imgpts, jac = cv2.projectPoints(axis, rvec, tvec, K, dist_coef)
+        print(imgpts)
+        quad = tracked.quad
+        x, y = quad[3]
+        img = self.draw_axis(image, (x, y), imgpts)
+        return img
+        
+    @staticmethod
+    def draw_axis(img, corner, imgpts):
+        # corner = tuple(corners[0].ravel())
+        origin = tuple(list(map(int, imgpts[0].ravel())))
+        x = tuple(list(map(int, imgpts[1].ravel())))
+        y = tuple(list(map(int, imgpts[2].ravel())))
+        z = tuple(list(map(int, imgpts[3].ravel())))
+        img = cv2.line(img, origin, x, (255,0,0), 5)
+        img = cv2.line(img, origin, y, (0,255,0), 5)
+        img = cv2.line(img, origin, z, (0,0,255), 5)
+        return img
+
 
 if __name__ == "__main__":
     player = VideoPlayer()

@@ -22,7 +22,7 @@ color = [(0, 255, 255), (0, 255, 255), (0, 255, 255), (0, 255, 255), (0, 255, 25
 
 class VideoPlayer:
     def __init__(self):
-        self.cap = cv2.VideoCapture(-1)
+        self.cap = cv2.VideoCapture(2)
         self.frame = None
         self.tracker = planeTracker()
         
@@ -40,8 +40,9 @@ class VideoPlayer:
     
     def play(self):
         # obj = objLoader("./ar_models/fox.obj", filetexture="./ar_models/texture.png", swapyz=True)
-        obj = objLoader("./ar_models/fox.obj", filetexture="./ar_models/fox_texture.png", swapyz=True)
-        # obj = objLoader("./ar_models/fox.obj", swapyz=True)
+        # obj = objLoader("./ar_models/fox.obj", filetexture="./ar_models/fox_texture.png", swapyz=True)
+        obj = objLoader("./ar_models/fox.obj", swapyz=True)
+        # obj = objLoader("./ar_models/rubiks.obj", filetexture="./ar_models/rubiks.png", swapyz=True)
         
         while True:
             if self.rect.tp_rect is None:
@@ -88,6 +89,7 @@ class VideoPlayer:
         
         
     def render_obj(self, image, obj, tracked, color=True):
+        
         vertices = obj.vertices
         scale_matrix = np.eye(3)*1
         h, w = image.shape[:2]
@@ -117,20 +119,12 @@ class VideoPlayer:
             dst = cv2.perspectiveTransform(points.reshape(-1, 1, 3), projection)
             imgpts = np.int32(dst)
             if color is False:
-                cv2.fillConvexPoly(image, imgpts, (0, 0, 0))
+                cv2.fillConvexPoly(image, imgpts, (255, 255, 255))
             else:
-                # color = self.hex_to_rgb(face[-1])
-                # color = color[::-1]  # reverse
                 color = face[-1]
                 cv2.fillConvexPoly(image, imgpts, color)
         return image
-            
-    @staticmethod
-    def hex_to_rgb(hex_color):
-        hex_color = hex_color.strip('#')
-        h_len = len(hex_color)
-        return tuple(int(hex_color[i:i + h_len // 3], 16) for i in range(0, h_len, h_len // 3))
-    
+                    
     @staticmethod
     def projection_matrix(camera_parameters, homography):
         # A[R1 R2 T] = H        

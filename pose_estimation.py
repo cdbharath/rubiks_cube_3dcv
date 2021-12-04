@@ -5,6 +5,7 @@
 import cv2
 import numpy as np
 from plane_tracker import planeTracker, SelectRect
+from plotter import Plotter
 
 # Simple model of a typical house (prism over cuboid)
 ar_verts = np.float32([[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0],
@@ -20,6 +21,7 @@ class VideoPlayer:
         self.cap = cv2.VideoCapture(-1)
         self.frame = None
         self.tracker = planeTracker()
+        self.plotter = Plotter()
         
         cv2.namedWindow("PlaneTracker")
         cv2.createTrackbar('focal', 'PlaneTracker', 25, 50, self.empty)
@@ -60,13 +62,14 @@ class VideoPlayer:
                         [0.0,0.0,      1.0]])
         dist_coef = np.zeros(4)
         _ret, rvec, tvec = cv2.solvePnP(quad_3d, tracked.quad, K, dist_coef)
-        
+        tvec_ = tvec.ravel()/100
+        self.plotter.update(tvec_[0], tvec_[1], tvec_[2])
         # draws axis on cube
         axis = np.float32([[0, 0, 0], [1,0,0], [0,1,0], [0,0,-1]]).reshape(-1,3)
         axis = axis * [(x1-x0), (y1-y0), -(x1-x0)*0.3] + (x0, y0, 0)
         
         imgpts, jac = cv2.projectPoints(axis, rvec, tvec, K, dist_coef)
-        print(imgpts)
+        
         quad = tracked.quad
         x, y = quad[3]
         img = self.draw_axis(image, (x, y), imgpts)

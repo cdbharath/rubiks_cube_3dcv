@@ -18,6 +18,10 @@ class IP_KF():
         self.H = np.array([                     # measurement matrix
         [1, 0, 0, 0],
         [0, 0, 1, 0]])
+
+        # self.H = np.array([                     # measurement matrix
+        # [1, 0],
+        # [0, 1]])
         
         self.Q = 0.9*np.eye(4, dtype=np.float)  # system error matrix
         self.R = np.array([                     # measurement error matrix
@@ -26,16 +30,24 @@ class IP_KF():
     
         # Kalman filter using filterpy
         
-        self.f = KalmanFilter (dim_x=4, dim_z=2)
-        self.f.x = np.array([[init_x], [0], [init_y], [0]])                         
-        self.f.F = self.F
-        self.f.H = self.H
-        self.f.Q = self.Q
-        self.f.R = self.R
-        self.f.P *= 1000.
+        self.kf = KalmanFilter (dim_x=4, dim_z=2)
+        self.kf.x = np.array([[init_x], [0], [init_y], [0]])                         
+        self.kf.F = self.F
+        self.kf.H = self.H
+        self.kf.Q = self.Q
+        self.kf.R = self.R
+        self.kf.P *= 1000.
         
     def update(self, x, y):
+        # self.dt = 0.001
+        # self.F = np.array([                     # system matrix
+        # [1, self.dt, 0,  0],
+        # [0,  1, 0,  0],
+        # [0,  0, 1, self.dt],
+        # [0,  0, 0,  1]], dtype=np.float)
+
+        
         z = np.array([[x], [y]])
-        self.f.predict(self.x, self.P, self.F, self.Q)
-        self.f.update(self.x, self.P, z, self.R, self.H)
-        return self.f.x
+        self.kf.predict()
+        self.kf.update(z)
+        return self.kf.x

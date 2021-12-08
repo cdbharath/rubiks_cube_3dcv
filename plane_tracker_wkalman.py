@@ -65,13 +65,22 @@ class planeTracker:
             x0, y0, x1, y1 = target.rect
             quad = np.float32([[x0, y0], [x1, y0], [x1, y1], [x0, y1]])
             quad = cv2.perspectiveTransform(quad.reshape(1, -1, 2), H).reshape(-1, 2)
-
+            
             x1, y1 = quad[0][0], quad[0][1]
             x2, y2 = quad[1][0], quad[1][1]
             x3, y3 = quad[2][0], quad[2][1]
             x4, y4 = quad[3][0], quad[3][1] 
-            print(self.kalman_p1.update(x1, y1))
-
+            
+            x1, _, y1, _ = self.kalman_p1.update(x1, y1)
+            x2, _, y2, _ = self.kalman_p2.update(x2, y2)
+            x3, _, y3, _ = self.kalman_p3.update(x3, y3)
+            x4, _, y4, _ = self.kalman_p4.update(x4, y4)
+            
+            quad = np.array([[x1, y1],
+                             [x2, y2],
+                             [x3, y3],
+                             [x4, y4]])
+            
             track = TrackedTarget(target=target, p0=p0, p1=p1, H=H, quad=quad)
             tracked.append(track)
         tracked.sort(key = lambda t: len(t.p0), reverse=True)

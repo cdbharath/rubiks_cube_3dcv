@@ -8,11 +8,11 @@ Do anything interesting with a Rubik's cube
 
 <p>
 <figure>
-<img src="media/detect.gif" height=400 widht=400>
+<img src="media/detect.gif" height="400" widht="400">
 <figcaption align = "center"><b>Detection of Rubik's cube faces</b></figcaption>
 </figure>
 <figure>
-<img src="media/detect_kalman.gif" height=400 widht=400>
+<img src="media/detect_kalman.gif" height="400" widht="400">
 <figcaption align = "center"><b>Detection after Kalman Filter</b></figcaption>
 </figure>
 

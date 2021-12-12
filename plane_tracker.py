@@ -13,7 +13,7 @@ flann_params= dict(algorithm = FLANN_INDEX_LSH,
                    key_size = 12,     
                    multi_probe_level = 1) 
 
-MIN_MATCH_COUNT = 10
+MIN_MATCH_COUNT = 20
 
 PlanarTarget = namedtuple('PlaneTarget', 'image, rect, keypoints, descrs, data')
 TrackedTarget = namedtuple('TrackedTarget', 'target, p0, p1, H, quad')
@@ -126,7 +126,7 @@ class planeTracker:
 
 class VideoPlayer:
     def __init__(self):
-        self.cap = cv2.VideoCapture(-1)
+        self.cap = cv2.VideoCapture(2)
         self.frame = None
         self.tracker = planeTracker()
         

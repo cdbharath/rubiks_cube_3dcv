@@ -17,7 +17,7 @@ flann_params= dict(algorithm = FLANN_INDEX_LSH,
 MIN_MATCH_COUNT = 10
 
 PlanarTarget = namedtuple('PlaneTarget', 'image, rect, keypoints, descrs, data')
-TrackedTarget = namedtuple('TrackedTarget', 'target, p0, p1, H, quad')
+TrackedTarget = namedtuple('TrackedTarget', 'target, p0, p1, H, quad, imageIdx')
 
 class planeTracker:
     def __init__(self):
@@ -60,8 +60,8 @@ class planeTracker:
             x0, y0, x1, y1 = target.rect
             quad = np.float32([[x0, y0], [x1, y0], [x1, y1], [x0, y1]])
             quad = cv2.perspectiveTransform(quad.reshape(1, -1, 2), H).reshape(-1, 2)
-
-            track = TrackedTarget(target=target, p0=p0, p1=p1, H=H, quad=quad)
+            print(imgIdx)
+            track = TrackedTarget(target=target, p0=p0, p1=p1, H=H, quad=quad, imageIdx=imgIdx)
             tracked.append(track)
         tracked.sort(key = lambda t: len(t.p0), reverse=True)
         return tracked
@@ -91,7 +91,7 @@ class planeTracker:
 
 class VideoPlayer:
     def __init__(self):
-        self.cap = cv2.VideoCapture(-1)
+        self.cap = cv2.VideoCapture(2)
         self.frame = None
         self.tracker = planeTracker()
         
@@ -125,6 +125,7 @@ class VideoPlayer:
                 cv2.polylines(frame, [np.int32(tr.quad)], True, (255, 255, 255), 2)
                 for (x, y) in np.int32(tr.p1):
                     cv2.circle(frame, (x, y), 2, (255, 255, 255))
+                frame = cv2.putText(frame, 'Face ' + str(tr.imageIdx), (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
                     
             # self.rect.draw(frame)
             cv2.imshow("PlaneTracker", frame)

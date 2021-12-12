@@ -3,6 +3,10 @@ Computer Vision Course Project, WPI
 ## Problem Statement: 
 Do anything interesting with a Rubik's cube
 
+## Content
+1. Detection of Rubik's cube 
+2. Augumented Reality
+3. Pose Estimation
 
 ## Detection of Rubik's cube using ORB feature matching and Homography:
 

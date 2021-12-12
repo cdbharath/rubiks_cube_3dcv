@@ -12,7 +12,7 @@ Do anything interesting with a Rubik's cube
 </p>
 Detection of Rubik's cube using ORB feature matching and Homograpy (left). Detection of cube after Kalman Filter (right)
 
-## Augumented Reality over the Rubik's cube using Perspective and Point algorithm:
+## Augmented Reality over the Rubik's cube using Perspective and Point algorithm:
 
 <p float="left">
   <img src="media/spiderman_ar.gif" width="400" />

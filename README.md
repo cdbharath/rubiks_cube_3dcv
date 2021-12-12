@@ -29,7 +29,7 @@ Augumented objects from waveform object files to the face of Rubik's cube
 <p float="left">
   <img src="media/pose_estimation.gif" />
 </p>
-The yaw is very noisy, this is one bug that needs to be fixed. Kalman filter can be used to reduce the estimation noise.
+The yaw is very noisy, this is one bug that needs to be fixed. Kalman filter can be used to reduce the estimation noise. The scale has to be found to get accurate state estimation
 
 ## References
 1. [Plane Tracking](https://github.com/opencv/opencv/blob/4.x/samples/python/plane_tracker.py "Plane Tracking")

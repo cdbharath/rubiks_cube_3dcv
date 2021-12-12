@@ -4,11 +4,11 @@ Computer Vision Course Project, WPI
 Do anything interesting with a Rubik's cube
 
 
-### Detection of Rubik's cube using ORB features and Homography
+### Detection of Rubik's cube using ORB features and Homography:
 
 <p float="left">
-  <img src="media/detect.gif" width="100" />
-  <img src="media/detect_kalman.gif" width="100" /> 
+  <img src="media/detect.gif" width="400" />
+  <img src="media/detect_kalman.gif" width="400" /> 
 </p>
 
 <p>

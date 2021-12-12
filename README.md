@@ -27,7 +27,7 @@ Augumented objects from waveform object files to the face of Rubik's cube
 ## Pose Estimation of the camera with respect to Rubik's cube using Perspective Projection:
 
 <p float="left">
-  <img src="media/pose_estimation" />
+  <img src="media/pose_estimation.gif" />
 </p>
 The yaw is very noisy, this is one bug that needs to be fixed. Kalman filter can be used to reduce the estimation noise.
 

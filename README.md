@@ -24,7 +24,7 @@ Detection of Rubik's cube using ORB feature matching and Homograpy (left). After
 </p>
 Augumented objects from waveform object files to the face of Rubik's cube
 
-## Pose Estimation of the camera with respect to Rubik's cube using Perspective Projection:
+## Pose Estimation of the camera with respect to Rubik's cube using Perspective-N-Point:
 
 <p float="left">
   <img src="media/pose_estimation.gif" width="800"/>

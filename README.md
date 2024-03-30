@@ -7,7 +7,7 @@ Do anything interesting with a Rubik's cube
 1. Detection of Rubik's cube 
 2. Augmented Reality
 3. Pose Estimation
-
+<!---
 ## Detection of Rubik's cube using ORB feature matching and Homography:
 
 <p float="left">
@@ -15,7 +15,7 @@ Do anything interesting with a Rubik's cube
   <img src="media/detect_kalman.gif" width="400" /> 
 </p>
 Detection of Rubik's cube using ORB feature matching and Homograpy (left). After Kalman Filter (right)
-
+--->
 ## Augmented Reality over the Rubik's cube using Perspective Projection:
 
 <p float="left">
